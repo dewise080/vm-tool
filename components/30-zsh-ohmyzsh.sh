@@ -12,11 +12,17 @@ fi
 install_pkgs() {
   if command -v apt-get >/dev/null 2>&1; then
     apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get -y install zsh curl git ca-certificates
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+      zsh curl git ca-certificates \
+      zsh-autosuggestions zsh-syntax-highlighting
   elif command -v dnf >/dev/null 2>&1; then
-    dnf -y install zsh curl git ca-certificates
+    dnf -y install \
+      zsh curl git ca-certificates \
+      zsh-autosuggestions zsh-syntax-highlighting
   elif command -v yum >/dev/null 2>&1; then
-    yum -y install zsh curl git ca-certificates
+    yum -y install \
+      zsh curl git ca-certificates \
+      zsh-autosuggestions zsh-syntax-highlighting
   else
     echo "No supported package manager found (apt/dnf/yum)." >&2
     exit 1
@@ -101,11 +107,45 @@ EOF
   fi
 }
 
+ensure_zshrc_plugins_block() {
+  local zshrc
+  zshrc="$USER_HOME/.zshrc"
+
+  if grep -Eq 'BEGIN VM-TOOL ZSH-PLUGINS' "$zshrc"; then
+    return 0
+  fi
+
+  cat >> "$zshrc" <<'EOF'
+
+# BEGIN VM-TOOL ZSH-PLUGINS
+# Autosuggestions (with graceful fallback)
+if [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
+else
+print -P "[%F{yellow}zsh%f] autosuggestions not found - install: sudo apt install zsh-autosuggestions" >&2
+fi
+
+# Syntax highlighting (with graceful fallback)
+if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+else
+print -P "[%F{yellow}zsh%f] syntax-highlighting not found - install: sudo apt install zsh-syntax-highlighting" >&2
+fi
+# END VM-TOOL ZSH-PLUGINS
+EOF
+  chown "$TARGET_USER:$TARGET_USER" "$zshrc"
+  echo "Added autosuggestions/syntax-highlighting block to $zshrc"
+}
+
 install_pkgs
 pick_user
 set_default_shell
 install_oh_my_zsh
 ensure_zshrc_bootstrap
+ensure_zshrc_plugins_block
 
 echo "Completed: zsh + Oh My Zsh configured for '$TARGET_USER'."
 echo "The shell change applies on next login for that user."
