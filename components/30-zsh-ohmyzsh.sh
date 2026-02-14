@@ -42,6 +42,12 @@ pick_user() {
     echo "User '$TARGET_USER' does not exist." >&2
     exit 1
   fi
+
+  USER_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
+  if [[ -z "$USER_HOME" || ! -d "$USER_HOME" ]]; then
+    echo "Could not determine home directory for '$TARGET_USER'." >&2
+    exit 1
+  fi
 }
 
 set_default_shell() {
@@ -62,15 +68,7 @@ set_default_shell() {
 }
 
 install_oh_my_zsh() {
-  local user_home
-  user_home="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
-
-  if [[ -z "$user_home" || ! -d "$user_home" ]]; then
-    echo "Could not determine home directory for '$TARGET_USER'." >&2
-    exit 1
-  fi
-
-  if [[ -d "$user_home/.oh-my-zsh" ]]; then
+  if [[ -d "$USER_HOME/.oh-my-zsh" ]]; then
     echo "Oh My Zsh already installed for '$TARGET_USER'. Skipping."
     return 0
   fi
@@ -79,10 +77,35 @@ install_oh_my_zsh() {
   su - "$TARGET_USER" -c 'RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
 }
 
+ensure_zshrc_bootstrap() {
+  local zshrc
+  zshrc="$USER_HOME/.zshrc"
+
+  if [[ ! -f "$zshrc" ]]; then
+    touch "$zshrc"
+    chown "$TARGET_USER:$TARGET_USER" "$zshrc"
+  fi
+
+  if ! grep -Eq 'oh-my-zsh\.sh' "$zshrc"; then
+    cat >> "$zshrc" <<'EOF'
+
+# BEGIN VM-TOOL OH-MY-ZSH
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git)
+source "$ZSH/oh-my-zsh.sh"
+# END VM-TOOL OH-MY-ZSH
+EOF
+    chown "$TARGET_USER:$TARGET_USER" "$zshrc"
+    echo "Added Oh My Zsh bootstrap block to $zshrc"
+  fi
+}
+
 install_pkgs
 pick_user
 set_default_shell
 install_oh_my_zsh
+ensure_zshrc_bootstrap
 
 echo "Completed: zsh + Oh My Zsh configured for '$TARGET_USER'."
 echo "The shell change applies on next login for that user."
