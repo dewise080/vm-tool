@@ -9,6 +9,11 @@
       "script": "20-create-admin-user.sh",
       "name": "Create Admin User",
       "desc": "Create a sudo-capable admin user interactively"
+    },
+    {
+      "script": "30-zsh-ohmyzsh.sh",
+      "name": "Zsh + Oh My Zsh",
+      "desc": "Install zsh, set default shell, and install Oh My Zsh"
     }
   ]
 }

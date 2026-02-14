@@ -27,3 +27,4 @@ Requires `whiptail` (preferred) or `dialog`.
 
 - If `components.json` exists and `jq` is installed, menu entries are loaded from JSON.
 - Otherwise, executable `components/*.sh` files are auto-discovered.
+- Some components require internet access (for example Oh My Zsh install).
