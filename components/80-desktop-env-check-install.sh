@@ -34,6 +34,12 @@ install_debian() {
     lxde)
       DEBIAN_FRONTEND=noninteractive apt-get -y install lxde-core lightdm xorg
       ;;
+    gnome)
+      DEBIAN_FRONTEND=noninteractive apt-get -y install ubuntu-gnome-desktop gdm3
+      ;;
+    kde)
+      DEBIAN_FRONTEND=noninteractive apt-get -y install kde-standard sddm
+      ;;
     *)
       echo "Unsupported option: $choice" >&2
       exit 1
@@ -56,6 +62,14 @@ install_fedora_rhel() {
     lxde)
       dnf -y groupinstall "LXDE" || dnf -y install @lxde-desktop-environment
       dnf -y install lightdm xorg-x11-server-Xorg
+      ;;
+    gnome)
+      dnf -y groupinstall "GNOME Desktop Environment" || dnf -y install @gnome-desktop
+      dnf -y install gdm
+      ;;
+    kde)
+      dnf -y groupinstall "KDE Plasma Workspaces" || dnf -y install @kde-desktop-environment
+      dnf -y install sddm
       ;;
     *)
       echo "Unsupported option: $choice" >&2
@@ -80,6 +94,14 @@ install_yum() {
       yum -y groupinstall "LXDE" || yum -y install @lxde-desktop-environment
       yum -y install lightdm xorg-x11-server-Xorg
       ;;
+    gnome)
+      yum -y groupinstall "GNOME Desktop Environment" || yum -y install @gnome-desktop
+      yum -y install gdm
+      ;;
+    kde)
+      yum -y groupinstall "KDE Plasma Workspaces" || yum -y install @kde-desktop-environment
+      yum -y install sddm
+      ;;
     *)
       echo "Unsupported option: $choice" >&2
       exit 1
@@ -91,6 +113,8 @@ enable_display_manager_if_present() {
   if command -v systemctl >/dev/null 2>&1; then
     if systemctl list-unit-files | grep -q '^lightdm\.service'; then
       systemctl enable lightdm >/dev/null 2>&1 || true
+    elif systemctl list-unit-files | grep -q '^gdm\.service'; then
+      systemctl enable gdm >/dev/null 2>&1 || true
     elif systemctl list-unit-files | grep -q '^sddm\.service'; then
       systemctl enable sddm >/dev/null 2>&1 || true
     fi
@@ -131,14 +155,18 @@ echo "Choose lightweight desktop to install:"
 echo "  1) xfce (recommended)"
 echo "  2) lxqt"
 echo "  3) lxde"
-echo "  4) cancel"
-read -r -p "Selection [1-4]: " selection
+echo "  4) gnome (Wayland-capable)"
+echo "  5) kde plasma (Wayland-capable)"
+echo "  6) cancel"
+read -r -p "Selection [1-6]: " selection
 
 case "$selection" in
   1) choice="xfce" ;;
   2) choice="lxqt" ;;
   3) choice="lxde" ;;
-  4)
+  4) choice="gnome" ;;
+  5) choice="kde" ;;
+  6)
     echo "Cancelled."
     exit 0
     ;;
