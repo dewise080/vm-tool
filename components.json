@@ -44,6 +44,11 @@
       "script": "90-xpra-beta-install.sh",
       "name": "Install Xpra Beta (Server+Client)",
       "desc": "Add xpra.org beta repo and install latest Xpra packages"
+    },
+    {
+      "script": "100-scrcpy-v3.3.4-install.sh",
+      "name": "Install scrcpy v3.3.4",
+      "desc": "Install scrcpy from GitHub release v3.3.4"
     }
   ]
 }
