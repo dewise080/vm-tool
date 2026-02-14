@@ -24,6 +24,16 @@
       "script": "50-passwordless-sudo.sh",
       "name": "Passwordless Sudo",
       "desc": "Configure NOPASSWD sudo access for a selected user"
+    },
+    {
+      "script": "60-cockpit-backports.sh",
+      "name": "Install Cockpit (Backports)",
+      "desc": "Install/update Cockpit from Ubuntu backports"
+    },
+    {
+      "script": "70-webmin-install.sh",
+      "name": "Install Webmin",
+      "desc": "Configure Webmin repo script and install Webmin"
     }
   ]
 }
