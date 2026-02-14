@@ -1,0 +1,14 @@
+{
+  "components": [
+    {
+      "script": "10-system-update.sh",
+      "name": "System Update",
+      "desc": "Update package index and upgrade installed packages"
+    },
+    {
+      "script": "20-create-admin-user.sh",
+      "name": "Create Admin User",
+      "desc": "Create a sudo-capable admin user interactively"
+    }
+  ]
+}
