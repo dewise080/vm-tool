@@ -39,6 +39,11 @@
       "script": "80-desktop-env-check-install.sh",
       "name": "Desktop Env Check/Install",
       "desc": "Check DE/X11/Wayland and install lightweight desktop if missing"
+    },
+    {
+      "script": "90-xpra-beta-install.sh",
+      "name": "Install Xpra Beta (Server+Client)",
+      "desc": "Add xpra.org beta repo and install latest Xpra packages"
     }
   ]
 }
