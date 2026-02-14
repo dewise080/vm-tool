@@ -49,6 +49,11 @@
       "script": "100-scrcpy-v3.3.4-install.sh",
       "name": "Install scrcpy v3.3.4",
       "desc": "Install scrcpy from GitHub release v3.3.4"
+    },
+    {
+      "script": "110-node-npm-cli-tools.sh",
+      "name": "Node/NPM + AI CLIs",
+      "desc": "Detect/install Node.js and npm, then optionally install Codex/Gemini CLI"
     }
   ]
 }
