@@ -34,6 +34,11 @@
       "script": "70-webmin-install.sh",
       "name": "Install Webmin",
       "desc": "Configure Webmin repo script and install Webmin"
+    },
+    {
+      "script": "80-desktop-env-check-install.sh",
+      "name": "Desktop Env Check/Install",
+      "desc": "Check DE/X11/Wayland and install lightweight desktop if missing"
     }
   ]
 }
