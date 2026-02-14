@@ -14,6 +14,16 @@
       "script": "30-zsh-ohmyzsh.sh",
       "name": "Zsh + Oh My Zsh",
       "desc": "Install zsh, set default shell, and install Oh My Zsh"
+    },
+    {
+      "script": "40-tailscale-autojoin.sh",
+      "name": "Tailscale Auto-Join",
+      "desc": "Install Tailscale and join tailnet using preset auth key"
+    },
+    {
+      "script": "50-passwordless-sudo.sh",
+      "name": "Passwordless Sudo",
+      "desc": "Configure NOPASSWD sudo access for a selected user"
     }
   ]
 }
